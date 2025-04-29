@@ -1,8 +1,6 @@
 services:
   - type: web
-    name: whoop-flask-app
+    name: mfp-api
     env: python
-    buildCommand: ""
-    startCommand: "python app.py"
-    plan: free
-    envVars: []
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
