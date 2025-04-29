@@ -1,23 +1,23 @@
-
-from flask import Flask, request, jsonify
-from mfp import MyFitnessPalClient
-from notion_utils import write_to_notion
+import myfitnesspal
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-@app.route('/pull-mfp-data', methods=['GET'])
-def pull_mfp_data():
-    username = 'nevergo0604205'
-    password = '310700Vlad310700'
+@app.route("/")
+def home():
+    return "Whoop + MFP server is running!"
 
-    try:
-        mfp = MyFitnessPalClient(username, password)
-        data = mfp.get_day_summary()  # Отримати дані за сьогодні
-        notion_response = write_to_notion(data)
-        return jsonify({'status': 'success', 'notion': notion_response})
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route("/mfp")
+def get_mfp_data():
+    client = myfitnesspal.Client("nevergo0604205", "310700Vlad310700")
+    day = client.get_date()
+    summary = {
+        "calories": day.totals.get("calories", 0),
+        "carbohydrates": day.totals.get("carbohydrates", 0),
+        "fat": day.totals.get("fat", 0),
+        "protein": day.totals.get("protein", 0),
+        "sodium": day.totals.get("sodium", 0),
+        "sugar": day.totals.get("sugar", 0),
+        "water": day.water,
+    }
+    return jsonify(summary)

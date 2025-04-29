@@ -1,3 +1,3 @@
-
-flask
-gunicorn
+flask==3.1.0
+gunicorn==23.0.0
+myfitnesspal==1.16.4
